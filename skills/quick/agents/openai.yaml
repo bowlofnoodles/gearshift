@@ -1,0 +1,4 @@
+interface:
+  display_name: "Quick Gear"
+  short_description: "Make clear localized changes directly"
+  default_prompt: "Use $gearshift:quick to implement this localized change directly."

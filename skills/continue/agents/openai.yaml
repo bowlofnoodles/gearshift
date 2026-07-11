@@ -1,0 +1,4 @@
+interface:
+  display_name: "Continue Gearshift Task"
+  short_description: "Resume a Gearshift task from evidence"
+  default_prompt: "Use $gearshift:continue to resume the current Gearshift task."

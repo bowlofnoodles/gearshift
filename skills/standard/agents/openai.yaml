@@ -1,0 +1,4 @@
+interface:
+  display_name: "Standard Gear"
+  short_description: "Align and plan bounded coding work"
+  default_prompt: "Use $gearshift:standard to clarify and implement this bounded task."

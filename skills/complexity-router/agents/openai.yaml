@@ -1,0 +1,4 @@
+interface:
+  display_name: "Complexity Router"
+  short_description: "Select the right gear for coding work"
+  default_prompt: "Use $gearshift:complexity-router to classify and route this coding task."
