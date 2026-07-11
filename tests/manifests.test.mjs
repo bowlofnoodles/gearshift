@@ -35,3 +35,10 @@ test("starter prompts use current platform-native Gearshift commands", async () 
   assert.ok(codex.interface.defaultPrompt.every((prompt) => prompt.includes("$gearshift:")));
   assert.ok(claude.starterPrompts.every((prompt) => prompt.includes("/gear:")));
 });
+
+test("Codex manifest references repository-owned SVG identity", async () => {
+  const manifest = await load(".codex-plugin/plugin.json");
+  assert.equal(manifest.interface.composerIcon, "./assets/icon.svg");
+  assert.equal(manifest.interface.logo, "./assets/logo.svg");
+  await Promise.all([manifest.interface.composerIcon, manifest.interface.logo].map((path) => readFile(path)));
+});

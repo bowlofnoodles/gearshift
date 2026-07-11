@@ -26,10 +26,11 @@
     ],
     "websiteURL": "https://github.com/bowlofnoodles/gearshift",
     "brandColor": "#F97316",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/logo.svg",
     "defaultPrompt": [
       "Use $gearshift:init to initialize Gearshift in this repository.",
       "Use $gearshift:quick to make this small, clear change directly.",
-      "Use $gearshift:standard to clarify and implement this bounded task.",
       "Use $gearshift:full to plan and implement this complex change."
     ]
   }
