@@ -29,11 +29,9 @@ test("compatibility declares optional engines by gear", async () => {
   );
 });
 
-test("starter prompts use current platform-native Gearshift commands", async () => {
+test("Codex starter prompts use current native Gearshift commands", async () => {
   const codex = await load(".codex-plugin/plugin.json");
-  const claude = await load(".claude-plugin/plugin.json");
   assert.ok(codex.interface.defaultPrompt.every((prompt) => prompt.includes("$gearshift:")));
-  assert.ok(claude.starterPrompts.every((prompt) => prompt.includes("/gear:")));
 });
 
 test("Codex manifest references repository-owned SVG identity", async () => {

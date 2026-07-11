@@ -2,10 +2,12 @@
 
 import { initializeRepository } from "./lib/init.mjs";
 import { runDoctor } from "./lib/doctor.mjs";
+import { validateTaskArtifacts } from "./lib/artifacts.mjs";
 import {
   continuationDecision,
   createTask,
   listIncompleteTasks,
+  readTask,
   transitionTask,
 } from "./lib/tasks.mjs";
 
@@ -71,24 +73,34 @@ async function main() {
     result = await continuationDecision({ root: options.root });
   } else if (options.command === "doctor") {
     result = await runDoctor({ root: options.root, skillRoots: options.skillRoots });
+  } else if (options.command === "validate-artifacts") {
+    if (!options.values.id) throw new Error("validate-artifacts requires --id");
+    const task = await readTask(options.root, options.values.id);
+    const checks = await validateTaskArtifacts(options.root, task);
+    const summary = { total: checks.length, pass: 0, warning: 0, error: 0 };
+    for (const item of checks) summary[item.level] += 1;
+    result = { taskId: task.id, checks, summary };
   } else {
     console.error(`Unknown command: ${[options.command, ...options.positionals].filter(Boolean).join(" ")}`);
     process.exitCode = 2;
     return;
   }
 
+  if (["doctor", "validate-artifacts"].includes(options.command) && result.summary.error > 0) {
+    process.exitCode = 1;
+  }
+
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (options.command !== "init") {
-    if (options.command === "doctor") {
-      console.log(`Gearshift ${result.version}`);
+    if (options.command === "doctor" || options.command === "validate-artifacts") {
+      console.log(options.command === "doctor" ? `Gearshift ${result.version}` : `Task ${result.taskId}`);
       for (const check of result.checks) {
         const symbol = check.level === "pass" ? "+" : check.level === "warning" ? "!" : "x";
         console.log(`${symbol} ${check.id}: ${check.message}`);
       }
       console.log(
-        `Summary: ${result.summary.pass} passed, ${result.summary.warn} warnings, ${result.summary.error} errors`,
+        `Summary: ${result.summary.pass} passed, ${result.summary.warning} warnings, ${result.summary.error} errors`,
       );
-      if (result.summary.error > 0) process.exitCode = 1;
     } else if (Array.isArray(result)) {
       for (const task of result) console.log(`${task.id} ${task.complexity} ${task.status}`);
     } else if (result.action) {

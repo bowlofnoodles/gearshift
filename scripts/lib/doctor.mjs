@@ -33,6 +33,20 @@ function supported(version, range) {
   });
 }
 
+function selectEvidence(evidence, names, range) {
+  const candidates = evidence.filter((item) => names.includes(item.name));
+  const compatible = candidates.filter((item) => supported(item.version, range));
+  const pool = compatible.length > 0 ? compatible : candidates;
+  return pool.sort((a, b) => {
+    const left = tuple(a.version);
+    const right = tuple(b.version);
+    if (left && right) return compare(right, left);
+    if (left) return -1;
+    if (right) return 1;
+    return a.path.localeCompare(b.path);
+  })[0];
+}
+
 export async function runDoctor({ root, skillRoots = [] }) {
   const resolvedRoot = resolve(root);
   const paths = gearPaths(resolvedRoot);
@@ -43,17 +57,31 @@ export async function runDoctor({ root, skillRoots = [] }) {
 
   const roots = skillRoots.length > 0 ? skillRoots : [
     join(resolvedRoot, ".agents", "skills"),
+    join(resolvedRoot, ".claude", "skills"),
+    join(resolvedRoot, ".codex", "skills"),
     join(homedir(), ".agents", "skills"),
+    join(homedir(), ".claude", "skills"),
+    join(homedir(), ".codex", "skills"),
+    join(homedir(), ".claude", "plugins", "cache"),
+    join(homedir(), ".codex", "plugins", "cache"),
   ];
   const evidence = await discoverSkills(roots);
-  const superpowers = evidence.find((item) => item.name === "superpowers" || item.name === "using-superpowers");
+  const superpowers = selectEvidence(
+    evidence,
+    ["superpowers", "using-superpowers"],
+    compatibility.dependencies.superpowers.supported,
+  );
   checks.push(check(
     "dependency-superpowers",
     superpowers && supported(superpowers.version, compatibility.dependencies.superpowers.supported) ? "pass" : "error",
     superpowers ? `Superpowers ${superpowers.version ?? "unknown"}` : "Superpowers is missing",
     superpowers?.path,
   ));
-  const grills = ["grill-me", "grill-with-docs"].map((name) => evidence.find((item) => item.name === name));
+  const grills = ["grill-me", "grill-with-docs"].map((name) => selectEvidence(
+    evidence,
+    [name],
+    compatibility.dependencies["mattpocock-skills"].supported,
+  ));
   const mattCompatible = grills.every((item) => item && supported(item.version, compatibility.dependencies["mattpocock-skills"].supported));
   checks.push(check(
     "dependency-mattpocock-skills",
@@ -68,9 +96,15 @@ export async function runDoctor({ root, skillRoots = [] }) {
     checks.push(check("guidance-managed", valid ? "pass" : "error", `${target} Gearshift block ${valid ? "is valid" : "conflicts with the managed contract"}`, target));
   }
 
-  for (const [name, path] of [["config", paths.config], ["index", paths.index], ["tasks", paths.tasks], ["runtime", paths.runtime]]) {
+  for (const [name, path] of [["config", paths.config], ["index", paths.index], ["tasks", paths.tasks]]) {
     checks.push(check("gear-structure", await exists(path) ? "pass" : "error", `.gear ${name} ${await exists(path) ? "exists" : "is missing"}`, path));
   }
+  checks.push(check(
+    "gear-runtime",
+    "pass",
+    await exists(paths.runtime) ? ".gear runtime exists" : ".gear runtime is ignored and will be created on demand",
+    paths.runtime,
+  ));
   const nestedIgnore = await readOptional(join(paths.gear, ".gitignore"));
   const ignoresRuntime = nestedIgnore !== null && ["/.runtime/", "*.tmp", "*.lock"].every((rule) => nestedIgnore.split(/\r?\n/).includes(rule));
   checks.push(check("git-runtime-ignore", ignoresRuntime ? "pass" : "error", ignoresRuntime ? "Runtime files are ignored" : "Nested .gear/.gitignore is incomplete"));
@@ -82,7 +116,7 @@ export async function runDoctor({ root, skillRoots = [] }) {
   const routingFixtures = ["quick-localized", "standard-bounded", "full-migration", "explicit-quick-conflict", "explicit-full-no-downgrade"];
   for (const fixture of routingFixtures) checks.push(check(`routing-fixture-${fixture}`, "pass", `Routing requirement registered: ${fixture}`));
 
-  const summary = { total: checks.length, pass: 0, warn: 0, error: 0 };
+  const summary = { total: checks.length, pass: 0, warning: 0, error: 0 };
   for (const item of checks) summary[item.level] += 1;
   return { version: packageInfo.version, checks, summary };
 }

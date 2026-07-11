@@ -12,6 +12,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/bowlofnoodles/gearshift/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/bowlofnoodles/gearshift/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-F97316.svg" /></a>
   <img alt="Node.js 18+" src="https://img.shields.io/badge/Node.js-18%2B-339933.svg" />
   <img alt="MVP preview" src="https://img.shields.io/badge/status-MVP%20preview-475569.svg" />

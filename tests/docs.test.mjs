@@ -70,8 +70,18 @@ test("community files describe reproducible contribution and license policy", as
     assert.ok(contributing.includes(phrase), `CONTRIBUTING includes ${phrase}`);
   }
   const changelog = await readFile("CHANGELOG.md", "utf8");
-  assert.match(changelog, /0\.1\.0 - Unreleased/);
+  assert.match(changelog, /0\.1\.0 - 2026-07-11/);
   const license = await readFile("LICENSE", "utf8");
   assert.match(license, /MIT License/);
   assert.match(license, /Copyright \(c\) 2026 bowlofnoodles/);
+});
+
+test("CI covers supported operating systems and Node versions", async () => {
+  const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+  for (const value of ["ubuntu-latest", "macos-latest", "windows-latest", "node: [18, 22]", "npm test", "npm run validate", "git diff --check"]) {
+    assert.ok(workflow.includes(value), `CI includes ${value}`);
+  }
+  for (const path of readmes) {
+    assert.match(await readFile(path, "utf8"), /actions\/workflows\/ci\.yml\/badge\.svg/);
+  }
 });

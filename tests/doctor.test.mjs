@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { mkdir, mkdtemp, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -41,6 +41,15 @@ test("discovers only supplied Skill roots and parses metadata", async () => {
   assert.equal(evidence.find((item) => item.name === "superpowers").version, "6.1.1");
 });
 
+test("discovers plugin-cache versions from ancestor directories", async () => {
+  const root = await temp();
+  const directory = join(root, "publisher/superpowers/6.1.1/skills/using-superpowers");
+  await mkdir(directory, { recursive: true });
+  await writeFile(join(directory, "SKILL.md"), "---\nname: using-superpowers\ndescription: fixture\n---\n");
+  const evidence = await discoverSkills([root]);
+  assert.equal(evidence[0].version, "6.1.1");
+});
+
 test("Doctor reports compatible dependencies and never mutates the repository", async () => {
   const root = await temp();
   const skills = await temp();
@@ -54,6 +63,35 @@ test("Doctor reports compatible dependencies and never mutates the repository", 
   assert.ok(report.checks.some((c) => c.id === "dependency-superpowers" && c.level === "pass"));
   assert.deepEqual(await snapshot(root), before);
   assert.equal(report.summary.total, report.checks.length);
+  assert.equal(report.summary.warning, 0);
+  assert.equal("warn" in report.summary, false);
+});
+
+test("Doctor selects compatible evidence when multiple plugin versions exist", async () => {
+  const root = await temp();
+  const skills = await temp();
+  await initializeRepository({ root, guidanceTargets: ["AGENTS.md"] });
+  await skill(skills, "superpowers/5.1.0", "superpowers", "5.1.0");
+  await skill(skills, "superpowers/6.1.1", "superpowers", "6.1.1");
+  await skill(skills, "grill/1.1.0", "grill-me", "1.1.0");
+  await skill(skills, "grill-docs/1.1.0", "grill-with-docs", "1.1.0");
+  const report = await runDoctor({ root, skillRoots: [skills] });
+  const superpowers = report.checks.find((item) => item.id === "dependency-superpowers");
+  assert.equal(superpowers.level, "pass");
+  assert.match(superpowers.path, /6\.1\.1/);
+});
+
+test("Doctor accepts an absent ignored runtime directory after a fresh clone", async () => {
+  const root = await temp();
+  const skills = await temp();
+  await initializeRepository({ root, guidanceTargets: ["AGENTS.md"] });
+  await rm(join(root, ".gear/.runtime"), { recursive: true });
+  await skill(skills, "superpowers", "superpowers", "6.1.1");
+  await skill(skills, "grill", "grill-me", "1.1.0");
+  await skill(skills, "grill-docs", "grill-with-docs", "1.1.0");
+  const report = await runDoctor({ root, skillRoots: [skills] });
+  assert.equal(report.summary.error, 0);
+  assert.ok(report.checks.some((item) => item.id === "gear-runtime" && item.level === "pass"));
 });
 
 test("Doctor reports missing/incompatible dependencies and repository conflicts", async () => {
@@ -96,4 +134,16 @@ test("Doctor CLI prints a readable report", async () => {
   assert.match(stdout, /^Gearshift 0\.1\.0/m);
   assert.match(stdout, /Summary: \d+ passed, 0 warnings, 0 errors/);
   assert.doesNotMatch(stdout, /undefined/);
+});
+
+test("Doctor CLI returns a failing status for JSON reports with errors", async () => {
+  const root = await temp();
+  await assert.rejects(
+    execFileAsync(process.execPath, ["scripts/gear.mjs", "doctor", "--root", root, "--json"]),
+    (error) => {
+      assert.equal(error.code, 1);
+      assert.ok(JSON.parse(error.stdout).summary.error > 0);
+      return true;
+    },
+  );
 });

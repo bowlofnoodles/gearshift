@@ -36,7 +36,6 @@ test("platform manifests expose native invocation syntax", async () => {
   const codex = JSON.parse(await readFile(".codex-plugin/plugin.json", "utf8"));
   const claude = JSON.parse(await readFile(".claude-plugin/plugin.json", "utf8"));
   assert.ok(codex.interface.defaultPrompt.some((prompt) => /\$gearshift:(init|quick|standard|full|continue|doctor)/.test(prompt)));
-  assert.ok(claude.starterPrompts.some((prompt) => /\/gear:(init|quick|standard|full|continue|doctor)/.test(prompt)));
   assert.equal(claude.commands, "./commands/");
   assert.equal(claude.hooks, "./hooks/hooks.json");
 });

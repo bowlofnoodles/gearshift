@@ -1,6 +1,14 @@
 import { readFile, readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
+function versionFromPath(path) {
+  const parts = path.split(/[\\/]/);
+  for (let index = parts.length - 1; index >= 0; index -= 1) {
+    if (/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(parts[index])) return parts[index];
+  }
+  return null;
+}
+
 function metadata(content) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return null;
@@ -17,7 +25,7 @@ async function scan(path, evidence) {
   try {
     entries = await readdir(path, { withFileTypes: true });
   } catch (error) {
-    if (error.code === "ENOENT") return;
+    if (["ENOENT", "EACCES", "EPERM"].includes(error.code)) return;
     throw error;
   }
   for (const entry of entries) {
@@ -25,7 +33,7 @@ async function scan(path, evidence) {
     if (entry.isDirectory()) await scan(child, evidence);
     else if (entry.name === "SKILL.md") {
       const parsed = metadata(await readFile(child, "utf8"));
-      if (parsed) evidence.push({ ...parsed, path: child });
+      if (parsed) evidence.push({ ...parsed, version: parsed.version ?? versionFromPath(child), path: child });
     }
   }
 }
