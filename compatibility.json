@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "gearshift": "0.1.0",
+  "dependencies": {
+    "superpowers": {
+      "supported": ">=6.1.0 <7.0.0",
+      "requiredFor": ["full"]
+    },
+    "mattpocock-skills": {
+      "supported": ">=1.1.0 <2.0.0",
+      "requiredFor": ["standard"]
+    }
+  }
+}
