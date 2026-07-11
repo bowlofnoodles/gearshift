@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, mkdtemp, readFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
@@ -28,7 +28,7 @@ test("gearPaths returns every canonical repository path", () => {
     runtime: join(root, ".gear", ".runtime"),
     currentTask: join(root, ".gear", ".runtime", "current-task"),
   });
-  assert.equal(gearPaths("/repo").tasks, "/repo/.gear/tasks");
+  assert.equal(gearPaths("/repo").tasks, join(resolve("/repo"), ".gear", "tasks"));
 });
 
 test("writeIfMissing creates a file but preserves an existing file", async () => {
@@ -51,7 +51,32 @@ test("writeJsonAtomic replaces JSON with a final newline and removes its tempora
     await readFile(path, "utf8"),
     '{\n  "status": "active",\n  "count": 2\n}\n',
   );
-  await assert.rejects(access(`${path}.tmp`));
+  assert.deepEqual(await readdir(join(root, "nested")), ["task.json"]);
+});
+
+test("writeJsonAtomic safely completes concurrent writes without temporary residue", async () => {
+  const root = await mkdtemp(join(tmpdir(), "gearshift-"));
+  const path = join(root, "task.json");
+  const values = Array.from({ length: 20 }, (_, writer) => ({
+    writer,
+    payload: `writer-${writer}`.repeat(100),
+  }));
+
+  await Promise.all(values.map((value) => writeJsonAtomic(path, value)));
+
+  const finalValue = JSON.parse(await readFile(path, "utf8"));
+  assert.ok(values.some((value) => JSON.stringify(value) === JSON.stringify(finalValue)));
+  assert.deepEqual(await readdir(root), ["task.json"]);
+});
+
+test("writeJsonAtomic removes its temporary file when rename fails", async () => {
+  const root = await mkdtemp(join(tmpdir(), "gearshift-"));
+  const path = join(root, "destination");
+  await mkdir(path);
+
+  await assert.rejects(writeJsonAtomic(path, { status: "blocked" }));
+
+  assert.deepEqual(await readdir(root), ["destination"]);
 });
 
 test("upsertManagedBlock inserts a managed block without losing user text", () => {

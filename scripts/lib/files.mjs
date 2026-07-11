@@ -1,4 +1,5 @@
-import { mkdir, rename, writeFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { mkdir, rename, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 export async function writeIfMissing(path, content) {
@@ -16,12 +17,16 @@ export async function writeIfMissing(path, content) {
 }
 
 export async function writeJsonAtomic(path, value) {
-  const temporaryPath = `${path}.tmp`;
+  const temporaryPath = `${path}.${randomUUID()}.tmp`;
   const json = `${JSON.stringify(value, null, 2)}\n`;
 
   await mkdir(dirname(path), { recursive: true });
-  await writeFile(temporaryPath, json);
-  await rename(temporaryPath, path);
+  try {
+    await writeFile(temporaryPath, json, { flag: "wx" });
+    await rename(temporaryPath, path);
+  } finally {
+    await rm(temporaryPath, { force: true }).catch(() => {});
+  }
 }
 
 export function upsertManagedBlock(content, marker, body) {
