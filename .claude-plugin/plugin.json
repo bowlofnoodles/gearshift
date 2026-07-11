@@ -6,5 +6,13 @@
     "name": "bowlofnoodles"
   },
   "repository": "https://github.com/bowlofnoodles/gearshift",
-  "license": "MIT"
+  "license": "MIT",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks.json",
+  "starterPrompts": [
+    "Use /gear:init to initialize Gearshift in this repository.",
+    "Use /gear:quick to make this small, clear change directly.",
+    "Use /gear:standard to clarify and implement this bounded task.",
+    "Use /gear:full to plan and implement this complex change."
+  ]
 }

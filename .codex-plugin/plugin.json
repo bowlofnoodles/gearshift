@@ -27,9 +27,10 @@
     "websiteURL": "https://github.com/bowlofnoodles/gearshift",
     "brandColor": "#F97316",
     "defaultPrompt": [
-      "Choose the right gear for my next coding task.",
-      "Make this small, clear change in Quick gear.",
-      "Plan and implement this complex change in Full gear."
+      "Use $gearshift:init to initialize Gearshift in this repository.",
+      "Use $gearshift:quick to make this small, clear change directly.",
+      "Use $gearshift:standard to clarify and implement this bounded task.",
+      "Use $gearshift:full to plan and implement this complex change."
     ]
   }
 }
