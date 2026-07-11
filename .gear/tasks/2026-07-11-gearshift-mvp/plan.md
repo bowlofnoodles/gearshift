@@ -87,6 +87,7 @@
 ### Task 1: Establish the plugin package and validation harness
 
 **Files:**
+- Create: `.gitignore`
 - Create: `package.json`
 - Create: `.codex-plugin/plugin.json`
 - Create: `.claude-plugin/plugin.json`
@@ -95,6 +96,18 @@
 
 **Interfaces:**
 - Produces: `npm test`, `npm run validate`, and machine-readable plugin/compatibility metadata used by all later tasks.
+
+- [ ] **Step 0: Ignore project-local execution scratch**
+
+Create `.gitignore` with:
+
+```gitignore
+node_modules/
+coverage/
+/.superpowers/
+```
+
+This root ignore file is for developing Gearshift itself. It is separate from the nested `.gear/.gitignore` that Gearshift installs in consumer repositories.
 
 - [ ] **Step 1: Write failing manifest tests**
 
@@ -197,7 +210,7 @@ Expected: plugin validation succeeds with no schema errors.
 - [ ] **Step 6: Commit package foundation**
 
 ```bash
-git add package.json .codex-plugin .claude-plugin compatibility.json tests/manifests.test.mjs
+git add .gitignore package.json .codex-plugin .claude-plugin compatibility.json tests/manifests.test.mjs
 git commit -m "chore: scaffold Gearshift plugin"
 ```
 
