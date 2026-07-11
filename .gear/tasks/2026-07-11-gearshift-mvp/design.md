@@ -554,7 +554,16 @@ Logical MVP commands:
 /gear:doctor
 ```
 
-Codex and Claude Code adapters may represent commands differently internally, but user-facing names and behavior remain equivalent.
+Codex and Claude Code use their native explicit-invocation conventions while keeping the action names short and equivalent:
+
+| Action | Codex | Claude Code |
+| --- | --- | --- |
+| Initialize | `$gearshift:init` | `/gear:init` |
+| Quick | `$gearshift:quick` | `/gear:quick` |
+| Standard | `$gearshift:standard` | `/gear:standard` |
+| Full | `$gearshift:full` | `/gear:full` |
+| Continue | `$gearshift:continue` | `/gear:continue` |
+| Doctor | `$gearshift:doctor` | `/gear:doctor` |
 
 ## 18. README and Project Presentation
 
