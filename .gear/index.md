@@ -4,6 +4,8 @@
 
 Tasks currently being planned, implemented, verified, or blocked are listed here.
 
+- [Claude Marketplace Distribution](tasks/2026-07-12-claude-marketplace-distribution/plan.md) — Standard workflow, implementing
+
 
 ## Completed
 

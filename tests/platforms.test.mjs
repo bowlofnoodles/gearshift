@@ -37,7 +37,7 @@ test("platform manifests expose native invocation syntax", async () => {
   const claude = JSON.parse(await readFile(".claude-plugin/plugin.json", "utf8"));
   assert.ok(codex.interface.defaultPrompt.some((prompt) => /\$gearshift:(init|quick|standard|full|continue|doctor)/.test(prompt)));
   assert.equal(claude.commands, "./commands/");
-  assert.equal(claude.hooks, "./hooks/hooks.json");
+  assert.equal(claude.hooks, undefined, "Claude auto-discovers the standard hooks file once");
 });
 
 test("SessionStart hook registers the bundled script for all startup reasons", async () => {
