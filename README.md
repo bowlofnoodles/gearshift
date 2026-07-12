@@ -61,27 +61,28 @@ Natural language is classified automatically and continues without an extra conf
 
 Gearshift never vendors or modifies those third-party Skills, so they remain independently upgradable.
 
-### Source checkout (MVP)
+### Codex marketplace preview
+
+```bash
+codex plugin marketplace add bowlofnoodles/gearshift --ref main
+codex plugin add gearshift@gearshift
+```
+
+Start a new Codex thread after installation so the Gearshift Skills and hook are loaded. To refresh the Git marketplace and reinstall the current release later:
+
+```bash
+codex plugin marketplace upgrade gearshift
+codex plugin add gearshift@gearshift
+```
+
+This is Gearshift's repository-owned preview marketplace, not an OpenAI-curated listing.
+
+### Claude Code source checkout
 
 ```bash
 git clone https://github.com/bowlofnoodles/gearshift.git
-cd gearshift
-npm test
-```
-
-For Claude Code, load the checkout directly:
-
-```bash
 claude --plugin-dir /absolute/path/to/gearshift
 ```
-
-Codex installs plugins from configured marketplace snapshots. Until Gearshift has a public marketplace listing, add this checkout through your local Codex marketplace and install it with:
-
-```bash
-codex plugin add gearshift@<your-local-marketplace>
-```
-
-Public Codex and Claude Code marketplace installation is planned after the MVP stabilizes. The repository does not claim a listing that does not exist yet.
 
 ## 🏁 30-second start
 
