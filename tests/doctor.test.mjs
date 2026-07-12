@@ -12,6 +12,7 @@ import { discoverSkills } from "../scripts/lib/skills.mjs";
 
 const temp = () => mkdtemp(join(tmpdir(), "gearshift-doctor-"));
 const execFileAsync = promisify(execFile);
+const releaseVersion = JSON.parse(await readFile("package.json", "utf8")).version;
 
 async function skill(root, folder, name, version) {
   const dir = join(root, folder);
@@ -149,7 +150,7 @@ test("Doctor CLI prints a readable report", async () => {
     "--skill-root",
     skills,
   ]);
-  assert.match(stdout, /^Gearshift 0\.1\.0/m);
+  assert.equal(stdout.split("\n", 1)[0], `Gearshift ${releaseVersion}`);
   assert.match(stdout, /Summary: \d+ passed, 0 warnings, 0 errors/);
   assert.doesNotMatch(stdout, /undefined/);
 });

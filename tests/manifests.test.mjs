@@ -7,10 +7,26 @@ const load = async (path) => JSON.parse(await readFile(path, "utf8"));
 test("Codex manifest exposes the Gearshift skills", async () => {
   const manifest = await load(".codex-plugin/plugin.json");
   assert.equal(manifest.name, "gearshift");
-  assert.equal(manifest.version, "0.1.0");
+  assert.equal(manifest.version, "0.1.1");
   assert.equal(manifest.license, "MIT");
   assert.equal(manifest.skills, "./skills/");
   assert.deepEqual(manifest.interface.capabilities, ["Read", "Write"]);
+});
+
+test("repository is a self-contained Claude Code marketplace", async () => {
+  const marketplace = await load(".claude-plugin/marketplace.json");
+
+  assert.equal(marketplace.name, "gearshift");
+  assert.deepEqual(marketplace.owner, { name: "bowlofnoodles" });
+  assert.deepEqual(marketplace.plugins, [
+    {
+      name: "gearshift",
+      source: "./",
+      description: "Selects a development workflow that matches the complexity of each coding task.",
+      version: "0.1.1",
+      author: { name: "bowlofnoodles" },
+    },
+  ]);
 });
 
 test("repository is a self-contained Codex marketplace", async () => {
@@ -33,6 +49,19 @@ test("Claude manifest uses the same identity and version", async () => {
   const claude = await load(".claude-plugin/plugin.json");
   assert.equal(claude.name, codex.name);
   assert.equal(claude.version, codex.version);
+});
+
+test("release metadata uses one Gearshift version", async () => {
+  const [codex, claude, compatibility, packageInfo] = await Promise.all([
+    load(".codex-plugin/plugin.json"),
+    load(".claude-plugin/plugin.json"),
+    load("compatibility.json"),
+    load("package.json"),
+  ]);
+  assert.deepEqual(
+    [codex.version, claude.version, compatibility.gearshift, packageInfo.version],
+    ["0.1.1", "0.1.1", "0.1.1", "0.1.1"],
+  );
 });
 
 test("compatibility declares optional engines by gear", async () => {

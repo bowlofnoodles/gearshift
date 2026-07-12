@@ -77,7 +77,21 @@ codex plugin add gearshift@gearshift
 
 This is Gearshift's repository-owned preview marketplace, not an OpenAI-curated listing.
 
-### Claude Code source checkout
+### Claude Code marketplace preview
+
+```bash
+claude plugin marketplace add bowlofnoodles/gearshift
+claude plugin install gearshift@gearshift
+```
+
+Restart Claude Code after installation. To refresh the marketplace and update the installed plugin later:
+
+```bash
+claude plugin marketplace update gearshift
+claude plugin update gearshift@gearshift
+```
+
+For plugin development, a source checkout can still be loaded without installation:
 
 ```bash
 git clone https://github.com/bowlofnoodles/gearshift.git

@@ -1,0 +1,18 @@
+{
+  "name": "gearshift",
+  "owner": {
+    "name": "bowlofnoodles"
+  },
+  "description": "Complexity-aware development workflows for Codex and Claude Code.",
+  "plugins": [
+    {
+      "name": "gearshift",
+      "source": "./",
+      "description": "Selects a development workflow that matches the complexity of each coding task.",
+      "version": "0.1.1",
+      "author": {
+        "name": "bowlofnoodles"
+      }
+    }
+  ]
+}

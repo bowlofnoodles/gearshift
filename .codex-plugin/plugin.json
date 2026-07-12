@@ -1,6 +1,6 @@
 {
   "name": "gearshift",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Selects a development workflow that matches the complexity of each coding task.",
   "author": {
     "name": "bowlofnoodles"
