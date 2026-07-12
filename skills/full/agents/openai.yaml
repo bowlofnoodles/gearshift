@@ -1,0 +1,4 @@
+interface:
+  display_name: "Full Gear"
+  short_description: "Run the rigorous workflow for complex work"
+  default_prompt: "Use $gearshift:full to execute this complex coding task rigorously."

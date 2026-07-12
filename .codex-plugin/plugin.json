@@ -1,0 +1,37 @@
+{
+  "name": "gearshift",
+  "version": "0.1.0",
+  "description": "Selects a development workflow that matches the complexity of each coding task.",
+  "author": {
+    "name": "bowlofnoodles"
+  },
+  "repository": "https://github.com/bowlofnoodles/gearshift",
+  "license": "MIT",
+  "keywords": [
+    "coding-workflow",
+    "ai-agents",
+    "task-routing",
+    "developer-tools"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Gearshift",
+    "shortDescription": "The right development process for the task at hand.",
+    "longDescription": "Gearshift routes coding work into Quick, Standard, or Full workflows so process rigor stays proportional to task complexity.",
+    "developerName": "bowlofnoodles",
+    "category": "Coding",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/bowlofnoodles/gearshift",
+    "brandColor": "#F97316",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/logo.svg",
+    "defaultPrompt": [
+      "Use $gearshift:init to initialize Gearshift in this repository.",
+      "Use $gearshift:quick to make this small, clear change directly.",
+      "Use $gearshift:full to plan and implement this complex change."
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "gearshift",
+  "version": "0.1.0",
+  "description": "Selects a development workflow that matches the complexity of each coding task.",
+  "author": {
+    "name": "bowlofnoodles"
+  },
+  "repository": "https://github.com/bowlofnoodles/gearshift",
+  "license": "MIT",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks.json"
+}

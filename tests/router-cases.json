@@ -1,0 +1,231 @@
+[
+  {
+    "id": "quick-button-color",
+    "category": "ui-style",
+    "request": "Change the primary checkout button to blue.",
+    "expectedGear": "Quick",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["clear", "localized", "style"]
+  },
+  {
+    "id": "quick-card-spacing",
+    "category": "ui-style",
+    "request": "Increase the profile card gap from 12px to 16px.",
+    "expectedGear": "Quick",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["clear", "localized", "style"]
+  },
+  {
+    "id": "quick-copy-typo",
+    "category": "ui-copy",
+    "request": "Fix the typo 'Recieve' in the signup confirmation.",
+    "expectedGear": "Quick",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["clear", "copy", "localized"]
+  },
+  {
+    "id": "quick-config-timeout",
+    "category": "localized-config",
+    "request": "Change the local development API timeout from 5 to 8 seconds.",
+    "expectedGear": "Quick",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["config", "localized", "clear"]
+  },
+  {
+    "id": "quick-rename-label",
+    "category": "ui-copy",
+    "request": "Rename the Settings navigation label to Preferences without changing the route.",
+    "expectedGear": "Quick",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["localized", "clear", "no api change"]
+  },
+  {
+    "id": "quick-static-placeholder",
+    "category": "ui-copy",
+    "request": "Update the search input placeholder to 'Search invoices'.",
+    "expectedGear": "Quick",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["copy", "localized", "clear"]
+  },
+  {
+    "id": "quick-lint-rule-value",
+    "category": "localized-config",
+    "request": "Set max-len to 100 in the existing ESLint configuration.",
+    "expectedGear": "Quick",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["config", "single setting", "clear"]
+  },
+  {
+    "id": "quick-explicit-localized",
+    "category": "explicit-override",
+    "request": "Quick: hide the already-deprecated footer link.",
+    "expectedGear": "Quick",
+    "explicit": true,
+    "explicitGear": "Quick",
+    "expectedAction": "route",
+    "reasonSignals": ["explicit selection", "localized"]
+  },
+  {
+    "id": "quick-explicit-conflict",
+    "category": "explicit-override",
+    "request": "Quick: add a new order state machine with retries, cancellation, and recovery.",
+    "expectedGear": "Quick",
+    "explicit": true,
+    "explicitGear": "Quick",
+    "expectedAction": "pause-upgrade",
+    "reasonSignals": ["explicit quick", "complexity boundary", "permission"]
+  },
+  {
+    "id": "standard-batch-refunds",
+    "category": "bounded-feature",
+    "request": "Add batch refunds; clarify how partial failures should be handled.",
+    "expectedGear": "Standard",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["bounded", "unresolved decision", "failure behavior"]
+  },
+  {
+    "id": "standard-cache-bug",
+    "category": "unclear-bug",
+    "request": "Fix stale account data after switching organizations; expected cache invalidation behavior is unclear.",
+    "expectedGear": "Standard",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["bounded", "unclear behavior", "decision"]
+  },
+  {
+    "id": "standard-csv-export",
+    "category": "bounded-feature",
+    "request": "Add CSV export to the existing invoices page with a choice of visible or all columns.",
+    "expectedGear": "Standard",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["bounded", "product decision", "existing module"]
+  },
+  {
+    "id": "standard-discount-rule",
+    "category": "domain-rule",
+    "request": "Add a first-order discount rule and clarify how guest checkouts are identified.",
+    "expectedGear": "Standard",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["domain rule", "bounded", "unresolved decision"]
+  },
+  {
+    "id": "standard-additive-api",
+    "category": "public-api",
+    "request": "Add an optional include_archived parameter to the existing list-projects API and document its semantics.",
+    "expectedGear": "Standard",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["public api", "additive", "bounded"]
+  },
+  {
+    "id": "standard-webhook-filter",
+    "category": "bounded-feature",
+    "request": "Let users filter one existing webhook by event type; confirm whether an empty selection means all or none.",
+    "expectedGear": "Standard",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["bounded", "unresolved decision", "existing system"]
+  },
+  {
+    "id": "standard-explicit-button",
+    "category": "explicit-override",
+    "request": "Standard: change the primary button color to blue.",
+    "expectedGear": "Standard",
+    "explicit": true,
+    "explicitGear": "Standard",
+    "expectedAction": "route",
+    "reasonSignals": ["explicit selection"]
+  },
+  {
+    "id": "standard-midtask-upgrade",
+    "category": "mid-task-upgrade",
+    "request": "The localized notification edit now needs user preferences, delivery schedules, and a new provider abstraction.",
+    "expectedGear": "Standard",
+    "explicit": false,
+    "expectedAction": "upgrade",
+    "reasonSignals": ["hidden complexity", "multiple decisions", "dependency edges"]
+  },
+  {
+    "id": "full-payment-extraction",
+    "category": "module-extraction",
+    "request": "Extract payments into a standalone service.",
+    "expectedGear": "Full",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["module extraction", "cross-system", "architecture"]
+  },
+  {
+    "id": "full-database-migration",
+    "category": "database-migration",
+    "request": "Migrate customer identity from integer IDs to UUIDs with zero downtime and rollback support.",
+    "expectedGear": "Full",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["migration", "compatibility", "staged delivery"]
+  },
+  {
+    "id": "full-module-rewrite",
+    "category": "module-rewrite",
+    "request": "Rewrite the legacy billing module while preserving all external behavior.",
+    "expectedGear": "Full",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["module rewrite", "compatibility", "large scope"]
+  },
+  {
+    "id": "full-breaking-api",
+    "category": "public-api",
+    "request": "Replace the v1 orders API with a new resource model and migrate all internal and partner clients.",
+    "expectedGear": "Full",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["breaking api", "migration", "multiple consumers"]
+  },
+  {
+    "id": "full-cross-system-sso",
+    "category": "cross-system",
+    "request": "Introduce SSO across the admin app, customer app, and identity gateway with a staged rollout.",
+    "expectedGear": "Full",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["cross-system", "architecture", "staged delivery"]
+  },
+  {
+    "id": "full-event-migration",
+    "category": "migration",
+    "request": "Move order fulfillment from synchronous calls to versioned events while both paths run in parallel.",
+    "expectedGear": "Full",
+    "explicit": false,
+    "expectedAction": "route",
+    "reasonSignals": ["migration", "compatibility", "staged delivery"]
+  },
+  {
+    "id": "full-explicit-no-downgrade",
+    "category": "explicit-override",
+    "request": "Full: change the button to blue.",
+    "expectedGear": "Full",
+    "explicit": true,
+    "explicitGear": "Full",
+    "expectedAction": "route",
+    "reasonSignals": ["explicit full", "no downgrade"]
+  },
+  {
+    "id": "full-standard-expansion",
+    "category": "mid-task-upgrade",
+    "request": "The bounded invoice change now requires a ledger rewrite, historical backfill, and compatibility with two API versions.",
+    "expectedGear": "Full",
+    "explicit": false,
+    "expectedAction": "upgrade",
+    "reasonSignals": ["scope expansion", "migration", "compatibility"]
+  }
+]

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" role="img" aria-labelledby="title desc">
+  <title>Gearshift</title>
+  <desc>Gearshift wordmark with an orange gear and three-position shift lever.</desc>
+  <rect x="2" y="2" width="756" height="216" rx="42" fill="#111827" stroke="#334155" stroke-width="4"/>
+  <g transform="translate(110 110)">
+    <path fill="#F97316" d="M-14-78h28l5 18 15 6 16-9 20 20-9 16 6 15 18 5v28l-18 5-6 15 9 16-20 20-16-9-15 6-5 18h-28l-5-18-15-6-16 9-20-20 9-16-6-15-18-5v-28l18-5 6-15-9-16 20-20 16 9 15-6z"/>
+    <circle r="46" fill="#111827"/>
+    <g stroke="#FDBA74" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M-28-26h56M-28-26v22M0-26v52M28-26v22"/>
+      <circle cx="-28" cy="4" r="9" fill="#F97316" stroke="#F97316"/>
+      <circle cx="0" cy="34" r="9" fill="#F97316" stroke="#F97316"/>
+      <circle cx="28" cy="4" r="9" fill="#F97316" stroke="#F97316"/>
+    </g>
+  </g>
+  <text x="215" y="128" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="72" font-weight="750" letter-spacing="-2">Gearshift</text>
+  <text x="220" y="165" fill="#FDBA74" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="600" letter-spacing="3">QUICK · STANDARD · FULL</text>
+</svg>

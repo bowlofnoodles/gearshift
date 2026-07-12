@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gearshift Doctor"
+  short_description: "Diagnose Gearshift without changing files"
+  default_prompt: "Use $gearshift:doctor to diagnose this Gearshift installation."
