@@ -48,6 +48,17 @@ test("documentation provides verified Codex marketplace installation", async () 
   }
 });
 
+test("documentation provides verified Claude Code marketplace installation", async () => {
+  for (const path of readmes) {
+    const content = await readFile(path, "utf8");
+    assert.match(content, /claude plugin marketplace add bowlofnoodles\/gearshift/);
+    assert.match(content, /claude plugin install gearshift@gearshift/);
+    assert.match(content, /claude plugin marketplace update gearshift/);
+    assert.match(content, /claude plugin update gearshift@gearshift/);
+    assert.match(content, /claude --plugin-dir \/absolute\/path\/to\/gearshift/);
+  }
+});
+
 test("README image links resolve and badges describe real state", async () => {
   for (const path of readmes) {
     const content = await readFile(path, "utf8");

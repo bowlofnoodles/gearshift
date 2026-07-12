@@ -77,7 +77,21 @@ codex plugin add gearshift@gearshift
 
 这是 Gearshift 自己维护的仓库 marketplace 预览版，并不是 OpenAI curated marketplace 上架版本。
 
-### Claude Code 源码加载
+### Claude Code Marketplace 预览版
+
+```bash
+claude plugin marketplace add bowlofnoodles/gearshift
+claude plugin install gearshift@gearshift
+```
+
+安装后重启 Claude Code。以后刷新 marketplace 并更新已安装插件：
+
+```bash
+claude plugin marketplace update gearshift
+claude plugin update gearshift@gearshift
+```
+
+开发插件时，仍然可以直接加载源码 checkout，无需安装：
 
 ```bash
 git clone https://github.com/bowlofnoodles/gearshift.git
