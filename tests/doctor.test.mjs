@@ -94,6 +94,24 @@ test("Doctor accepts an absent ignored runtime directory after a fresh clone", a
   assert.ok(report.checks.some((item) => item.id === "gear-runtime" && item.level === "pass"));
 });
 
+test("Doctor warns instead of failing when installed grill Skills omit versions", async () => {
+  const root = await temp();
+  const skills = await temp();
+  await initializeRepository({ root, guidanceTargets: ["AGENTS.md"] });
+  await skill(skills, "superpowers", "superpowers", "6.1.1");
+  for (const [folder, name] of [["grill", "grill-me"], ["grill-docs", "grill-with-docs"]]) {
+    const directory = join(skills, folder);
+    await mkdir(directory, { recursive: true });
+    await writeFile(join(directory, "SKILL.md"), `---\nname: ${name}\ndescription: fixture\n---\n`);
+  }
+  const report = await runDoctor({ root, skillRoots: [skills] });
+  const grills = report.checks.find((item) => item.id === "dependency-mattpocock-skills");
+  assert.equal(grills.level, "warning");
+  assert.match(grills.message, /installed.*version.*not declared/i);
+  assert.equal(report.summary.error, 0);
+  assert.equal(report.summary.warning, 1);
+});
+
 test("Doctor reports missing/incompatible dependencies and repository conflicts", async () => {
   const root = await temp();
   const skills = await temp();

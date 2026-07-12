@@ -82,11 +82,24 @@ export async function runDoctor({ root, skillRoots = [] }) {
     [name],
     compatibility.dependencies["mattpocock-skills"].supported,
   ));
-  const mattCompatible = grills.every((item) => item && supported(item.version, compatibility.dependencies["mattpocock-skills"].supported));
+  const grillsPresent = grills.every(Boolean);
+  const grillVersionsKnown = grillsPresent && grills.every((item) => item.version);
+  const mattCompatible = grillVersionsKnown
+    && grills.every((item) => supported(item.version, compatibility.dependencies["mattpocock-skills"].supported));
+  const mattLevel = !grillsPresent || (grillVersionsKnown && !mattCompatible)
+    ? "error"
+    : grillVersionsKnown ? "pass" : "warning";
+  const mattMessage = !grillsPresent
+    ? "Compatible grill-me and grill-with-docs are required"
+    : !grillVersionsKnown
+      ? "grill-me and grill-with-docs are installed, but their versions are not declared"
+      : mattCompatible
+        ? "grill-me and grill-with-docs are compatible"
+        : "Installed grill-me or grill-with-docs version is incompatible";
   checks.push(check(
     "dependency-mattpocock-skills",
-    mattCompatible ? "pass" : "error",
-    mattCompatible ? "grill-me and grill-with-docs are compatible" : "Compatible grill-me and grill-with-docs are required",
+    mattLevel,
+    mattMessage,
   ));
 
   for (const target of ["AGENTS.md", "CLAUDE.md"]) {
