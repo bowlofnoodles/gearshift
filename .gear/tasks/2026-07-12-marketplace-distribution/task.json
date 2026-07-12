@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-12-marketplace-distribution",
+  "title": "Marketplace Distribution",
+  "complexity": "standard",
+  "status": "completed",
+  "phase": "complete",
+  "createdAt": "2026-07-12T08:44:48.317Z",
+  "updatedAt": "2026-07-12T08:49:31.652Z",
+  "artifacts": {
+    "brief": "brief.md",
+    "plan": "plan.md",
+    "summary": "summary.md"
+  },
+  "engines": {},
+  "history": [
+    {
+      "from": "planning",
+      "to": "ready",
+      "at": "2026-07-12T08:46:51.264Z"
+    },
+    {
+      "from": "ready",
+      "to": "implementing",
+      "at": "2026-07-12T08:46:51.289Z"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "at": "2026-07-12T08:49:27.075Z"
+    },
+    {
+      "from": "verifying",
+      "to": "completed",
+      "at": "2026-07-12T08:49:31.652Z"
+    }
+  ]
+}

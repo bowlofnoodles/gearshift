@@ -61,27 +61,28 @@ flowchart LR
 
 Gearshift 不会复制或修改这些第三方 Skills，因此它们仍可独立升级。
 
-### 源码安装（MVP）
+### Codex Marketplace 预览版
+
+```bash
+codex plugin marketplace add bowlofnoodles/gearshift --ref main
+codex plugin add gearshift@gearshift
+```
+
+安装后新建一个 Codex 任务，让 Gearshift Skills 和 Hook 被重新加载。以后更新 Git marketplace 并重新安装当前版本：
+
+```bash
+codex plugin marketplace upgrade gearshift
+codex plugin add gearshift@gearshift
+```
+
+这是 Gearshift 自己维护的仓库 marketplace 预览版，并不是 OpenAI curated marketplace 上架版本。
+
+### Claude Code 源码加载
 
 ```bash
 git clone https://github.com/bowlofnoodles/gearshift.git
-cd gearshift
-npm test
-```
-
-Claude Code 可以直接加载本地 checkout：
-
-```bash
 claude --plugin-dir /absolute/path/to/gearshift
 ```
-
-Codex 从已配置的 marketplace snapshot 安装插件。在 Gearshift 进入公共 marketplace 之前，请先通过 Codex 本地 marketplace 注册这份 checkout，再安装：
-
-```bash
-codex plugin add gearshift@<your-local-marketplace>
-```
-
-等 MVP 稳定后，项目会提供公共 Codex 与 Claude Code marketplace 安装。当前仓库不会假装一个尚不存在的上架渠道已经可用。
 
 ## 🏁 30 秒上手
 

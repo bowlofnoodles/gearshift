@@ -38,6 +38,16 @@ test("documentation distinguishes Codex and Claude syntax", async () => {
   assert.match(english, /\/hooks/);
 });
 
+test("documentation provides verified Codex marketplace installation", async () => {
+  for (const path of readmes) {
+    const content = await readFile(path, "utf8");
+    assert.match(content, /codex plugin marketplace add bowlofnoodles\/gearshift --ref main/);
+    assert.match(content, /codex plugin add gearshift@gearshift/);
+    assert.match(content, /codex plugin marketplace upgrade gearshift/);
+    assert.doesNotMatch(content, /<your-local-marketplace>|<你的本地 marketplace>/i);
+  }
+});
+
 test("README image links resolve and badges describe real state", async () => {
   for (const path of readmes) {
     const content = await readFile(path, "utf8");
