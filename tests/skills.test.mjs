@@ -14,9 +14,8 @@ const skillNames = [
   "doctor",
 ];
 
-async function loadSkill(name) {
-  const content = await readFile(`skills/${name}/SKILL.md`, "utf8");
-  const match = content.match(/^---\n([\s\S]*?)\n---\n/);
+function parseSkill(content, name) {
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
   assert.ok(match, `${name} has YAML frontmatter`);
   const fields = Object.fromEntries(match[1].split("\n").map((line) => {
     const separator = line.indexOf(":");
@@ -24,6 +23,15 @@ async function loadSkill(name) {
   }));
   return { content, fields };
 }
+
+async function loadSkill(name) {
+  return parseSkill(await readFile(`skills/${name}/SKILL.md`, "utf8"), name);
+}
+
+test("Skill frontmatter parsing supports Windows CRLF checkouts", () => {
+  const parsed = parseSkill("---\r\nname: fixture\r\ndescription: Use when testing.\r\n---\r\n# Fixture\r\n", "fixture");
+  assert.equal(parsed.fields.name, "fixture");
+});
 
 test("all Gearshift Skills have discoverable unique metadata", async () => {
   const skills = await Promise.all(skillNames.map(loadSkill));
