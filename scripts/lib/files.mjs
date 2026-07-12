@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, rename, rm, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
+import { dirname, resolve } from "node:path";
+
+const jsonWriteQueues = new Map();
 
 export async function writeIfMissing(path, content) {
   await mkdir(dirname(path), { recursive: true });
@@ -16,17 +18,28 @@ export async function writeIfMissing(path, content) {
   }
 }
 
-export async function writeJsonAtomic(path, value) {
-  const temporaryPath = `${path}.${randomUUID()}.tmp`;
-  const json = `${JSON.stringify(value, null, 2)}\n`;
+export function writeJsonAtomic(path, value) {
+  const queueKey = resolve(path);
+  const previousWrite = jsonWriteQueues.get(queueKey) ?? Promise.resolve();
+  const write = previousWrite.catch(() => {}).then(async () => {
+    const temporaryPath = `${path}.${randomUUID()}.tmp`;
+    const json = `${JSON.stringify(value, null, 2)}\n`;
 
-  await mkdir(dirname(path), { recursive: true });
-  try {
-    await writeFile(temporaryPath, json, { flag: "wx" });
-    await rename(temporaryPath, path);
-  } finally {
-    await rm(temporaryPath, { force: true }).catch(() => {});
-  }
+    await mkdir(dirname(path), { recursive: true });
+    try {
+      await writeFile(temporaryPath, json, { flag: "wx" });
+      await rename(temporaryPath, path);
+    } finally {
+      await rm(temporaryPath, { force: true }).catch(() => {});
+    }
+  });
+
+  jsonWriteQueues.set(queueKey, write);
+  return write.finally(() => {
+    if (jsonWriteQueues.get(queueKey) === write) {
+      jsonWriteQueues.delete(queueKey);
+    }
+  });
 }
 
 export function upsertManagedBlock(content, marker, body) {
