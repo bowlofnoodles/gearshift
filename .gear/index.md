@@ -4,6 +4,8 @@
 
 Tasks currently being planned, implemented, verified, or blocked are listed here.
 
+- [Marketplace Distribution](tasks/2026-07-12-marketplace-distribution/plan.md) — Standard workflow, implementing
+
 ## Completed
 
 Completed and cancelled tasks are listed here without moving their artifact directories.

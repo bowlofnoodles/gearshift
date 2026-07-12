@@ -13,6 +13,21 @@ test("Codex manifest exposes the Gearshift skills", async () => {
   assert.deepEqual(manifest.interface.capabilities, ["Read", "Write"]);
 });
 
+test("repository is a self-contained Codex marketplace", async () => {
+  const marketplace = await load(".agents/plugins/marketplace.json");
+
+  assert.equal(marketplace.name, "gearshift");
+  assert.equal(marketplace.interface.displayName, "Gearshift");
+  assert.deepEqual(marketplace.plugins, [
+    {
+      name: "gearshift",
+      source: { source: "local", path: "." },
+      policy: { installation: "AVAILABLE", authentication: "ON_INSTALL" },
+      category: "Developer Tools",
+    },
+  ]);
+});
+
 test("Claude manifest uses the same identity and version", async () => {
   const codex = await load(".codex-plugin/plugin.json");
   const claude = await load(".claude-plugin/plugin.json");
