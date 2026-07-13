@@ -21,7 +21,7 @@ const initialized = await access(join(cwd, ".gear", "config.yaml"), constants.F_
   .then(() => true, () => false);
 const additionalContext = initialized
   ? "Gearshift is initialized. Route all coding changes through Gearshift first; explicit selection wins. Superpowers is only the Full engine."
-  : "Gearshift is installed but this repository is not initialized. Use $gearshift:init in Codex or /gear:init in Claude Code to initialize it.";
+  : "Gearshift is installed but this repository is not initialized. Use $gearshift:init in Codex or /gearshift:init in Claude Code to initialize it.";
 
 process.stdout.write(`${JSON.stringify({
   hookSpecificOutput: {

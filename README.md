@@ -104,7 +104,7 @@ After installing the plugin, open the repository you want to work on and initial
 
 | Codex | Claude Code |
 | --- | --- |
-| `$gearshift:init` | `/gear:init` |
+| `$gearshift:init` | `/gearshift:init` |
 
 Initialization creates the shared `.gear/` structure, adds a versioned Gearshift block to `AGENTS.md` and/or `CLAUDE.md`, installs nested runtime ignore rules, and runs Doctor. It preserves user-owned text and is safe to run again.
 
@@ -134,12 +134,12 @@ An explicit command bypasses classification. For example, `$gearshift:full` rema
 
 | Action | Codex | Claude Code | Purpose |
 | --- | --- | --- | --- |
-| Initialize | `$gearshift:init` | `/gear:init` | Create or repair the managed repository setup |
-| Quick | `$gearshift:quick` | `/gear:quick` | Implement a clear localized change directly |
-| Standard | `$gearshift:standard` | `/gear:standard` | Clarify and plan bounded work |
-| Full | `$gearshift:full` | `/gear:full` | Run the rigorous complex-work workflow |
-| Continue | `$gearshift:continue` | `/gear:continue` | Resume interrupted Standard or Full work from repository evidence |
-| Doctor | `$gearshift:doctor` | `/gear:doctor` | Diagnose setup without changing files |
+| Initialize | `$gearshift:init` | `/gearshift:init` | Create or repair the managed repository setup |
+| Quick | `$gearshift:quick` | `/gearshift:quick` | Implement a clear localized change directly |
+| Standard | `$gearshift:standard` | `/gearshift:standard` | Clarify and plan bounded work |
+| Full | `$gearshift:full` | `/gearshift:full` | Run the rigorous complex-work workflow |
+| Continue | `$gearshift:continue` | `/gearshift:continue` | Resume interrupted Standard or Full work from repository evidence |
+| Doctor | `$gearshift:doctor` | `/gearshift:doctor` | Diagnose setup without changing files |
 
 `continue` exists because Standard and Full work can span sessions. It reads task state, artifacts, Git status, and current changes, then resumes the first incomplete phase without repeating completed grilling or planning. Quick intentionally has no resumable task record.
 

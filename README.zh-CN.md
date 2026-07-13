@@ -104,7 +104,7 @@ claude --plugin-dir /absolute/path/to/gearshift
 
 | Codex | Claude Code |
 | --- | --- |
-| `$gearshift:init` | `/gear:init` |
+| `$gearshift:init` | `/gearshift:init` |
 
 初始化会创建共享的 `.gear/` 结构，在 `AGENTS.md` 和/或 `CLAUDE.md` 中加入带版本的 Gearshift 托管区块，写入嵌套的运行时忽略规则，并运行 Doctor。用户自己维护的文字会被保留，重复运行也安全。
 
@@ -134,12 +134,12 @@ claude --plugin-dir /absolute/path/to/gearshift
 
 | 操作 | Codex | Claude Code | 用途 |
 | --- | --- | --- | --- |
-| 初始化 | `$gearshift:init` | `/gear:init` | 创建或修复仓库中的托管配置 |
-| Quick | `$gearshift:quick` | `/gear:quick` | 直接实现清晰的局部修改 |
-| Standard | `$gearshift:standard` | `/gear:standard` | 澄清并规划边界明确的工作 |
-| Full | `$gearshift:full` | `/gear:full` | 对复杂工作运行完整严谨流程 |
-| 继续 | `$gearshift:continue` | `/gear:continue` | 根据仓库证据恢复中断的 Standard 或 Full 任务 |
-| Doctor | `$gearshift:doctor` | `/gear:doctor` | 只诊断配置，不修改文件 |
+| 初始化 | `$gearshift:init` | `/gearshift:init` | 创建或修复仓库中的托管配置 |
+| Quick | `$gearshift:quick` | `/gearshift:quick` | 直接实现清晰的局部修改 |
+| Standard | `$gearshift:standard` | `/gearshift:standard` | 澄清并规划边界明确的工作 |
+| Full | `$gearshift:full` | `/gearshift:full` | 对复杂工作运行完整严谨流程 |
+| 继续 | `$gearshift:continue` | `/gearshift:continue` | 根据仓库证据恢复中断的 Standard 或 Full 任务 |
+| Doctor | `$gearshift:doctor` | `/gearshift:doctor` | 只诊断配置，不修改文件 |
 
 `continue` 的存在，是因为 Standard 与 Full 可能跨会话完成。它读取任务状态、产物、Git 状态和当前修改，从第一个未完成阶段继续，不会重复已经完成的追问或规划。Quick 刻意不创建可恢复的任务记录。
 
