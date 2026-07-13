@@ -12,6 +12,6 @@ Move directly from evidence to implementation.
 3. Run proportionate verification: choose the smallest relevant existing test, type check, build, formatter, parser, or visual check.
 4. Report the change and verification evidence.
 
-Create no task directory or workflow artifacts. Skip grilling, brainstorming, design documents, plans, worktrees, mandatory TDD, and workflow review stages.
+Create no task directory or workflow documents. Skip grilling, brainstorming, design documents, plans, worktrees, mandatory TDD, and workflow review stages.
 
-If hidden complexity crosses into Standard or Full, follow `gearshift:complexity-router` upgrade rules. For explicitly selected Quick, stop and ask before upgrading; do not continue a complex change under the Quick contract.
+If hidden complexity crosses into Complex, follow `gearshift:complexity-router` upgrade rules. For explicitly selected Quick, stop and ask before upgrading; do not continue a complex change under the Quick contract.

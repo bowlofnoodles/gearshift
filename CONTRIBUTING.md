@@ -37,7 +37,7 @@ Validate the Codex plugin with the current `plugin-creator` validator before sub
 
 ## Routing policy changes
 
-Changes to Quick, Standard, Full, explicit overrides, or upgrade rules must include representative cases in `tests/router-cases.json` and assertions in `tests/router.test.mjs`. Keep gear coverage balanced and use task complexity terminology consistently.
+Changes to Quick, Complex, explicit overrides, or upgrade rules must include representative cases in `tests/router-cases.json` and assertions in `tests/router.test.mjs`. Keep gear coverage balanced and use task complexity terminology consistently.
 
 Generate platform-neutral eval prompts with:
 
@@ -47,7 +47,7 @@ node scripts/eval-router.mjs
 
 ## Third-party boundaries
 
-Do not vendor, copy, or edit Superpowers, `grill-me`, or `grill-with-docs` Skills. Gearshift integrates compatible external installations through explicit contracts so upstream projects remain independently upgradable.
+Do not vendor, copy, or edit `grill-me` or `grill-with-docs` Skills. Gearshift integrates compatible external installations through explicit contracts so upstream projects remain independently upgradable.
 
 ## Pull requests
 
@@ -55,4 +55,4 @@ Do not vendor, copy, or edit Superpowers, `grill-me`, or `grill-with-docs` Skill
 - Include verification evidence.
 - Update both READMEs for user-facing changes.
 - Keep badges and compatibility claims tied to real repository state.
-- Do not commit `.gear/.runtime/`, temporary files, or local plugin caches.
+- Do not commit temporary files or local plugin caches.

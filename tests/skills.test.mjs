@@ -5,12 +5,9 @@ import test from "node:test";
 const skillNames = [
   "using-gearshift",
   "complexity-router",
-  "artifact-contract",
   "init",
   "quick",
-  "standard",
-  "full",
-  "continue",
+  "complex",
   "doctor",
 ];
 
@@ -49,46 +46,26 @@ test("bootstrap and Router establish Gearshift precedence and explicit overrides
   const bootstrap = (await loadSkill("using-gearshift")).content;
   const router = (await loadSkill("complexity-router")).content;
   assert.match(bootstrap, /every coding (request|change)/i);
-  assert.match(bootstrap, /before (Superpowers|other workflow)/i);
-  assert.match(bootstrap, /explicit.*(Quick|Standard|Full).*wins/i);
-  assert.match(router, /Gear: <Quick\|Standard\|Full> — <one sentence>/);
+  assert.match(bootstrap, /before (third-party|other workflow)/i);
+  assert.match(bootstrap, /explicit.*(Quick|Complex).*wins/i);
+  assert.match(router, /Gear: <Quick\|Complex> — <one sentence>/);
   assert.match(router, /without (asking|confirmation)/i);
   assert.match(router, /upgrade/i);
-});
-
-test("artifact contract owns canonical shared paths", async () => {
-  const content = (await loadSkill("artifact-contract")).content;
-  for (const path of [
-    ".gear/config.yaml",
-    ".gear/index.md",
-    ".gear/context/architecture.md",
-    ".gear/context/glossary.md",
-    ".gear/adr/",
-    ".gear/tasks/<task-id>/design.md",
-    ".gear/tasks/<task-id>/plan.md",
-    ".gear/tasks/<task-id>/summary.md",
-  ]) assert.ok(content.includes(path), `artifact contract includes ${path}`);
-  assert.match(content, /validate.*after.*delegat/is);
 });
 
 test("workflow Skills preserve the approved gear contracts", async () => {
   const init = (await loadSkill("init")).content;
   const quick = (await loadSkill("quick")).content;
-  const standard = (await loadSkill("standard")).content;
-  const full = (await loadSkill("full")).content;
-  const continuation = (await loadSkill("continue")).content;
+  const complex = (await loadSkill("complex")).content;
   const doctor = (await loadSkill("doctor")).content;
 
   assert.match(init, /ask.*before.*install/is);
   assert.match(init, /doctor/i);
   assert.match(quick, /no task (directory|artifacts)/i);
   assert.match(quick, /proportionate/i);
-  assert.match(standard, /grill-me|grill-with-docs/);
-  assert.match(standard, /TDD is not mandatory/i);
-  assert.match(standard, /ask.*new tests/is);
-  assert.match(full, /superpowers:brainstorming/);
-  assert.match(full, /\.gear\/tasks\/<task-id>\/(design|plan)\.md/);
-  assert.match(continuation, /never repeat.*completed/i);
+  assert.match(complex, /grill-me|grill-with-docs/);
+  assert.match(complex, /Codex plan mode/i);
+  assert.match(complex, /native behavior/i);
   assert.match(doctor, /read-only/i);
   assert.match(doctor, /does not repair/i);
 });
