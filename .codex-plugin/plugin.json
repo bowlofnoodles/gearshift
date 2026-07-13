@@ -17,7 +17,7 @@
   "interface": {
     "displayName": "Gearshift",
     "shortDescription": "The right development process for the task at hand.",
-    "longDescription": "Gearshift routes coding work into Quick, Standard, or Full workflows so process rigor stays proportional to task complexity.",
+    "longDescription": "Gearshift routes coding work into Quick or Complex workflows so process rigor stays proportional to task complexity.",
     "developerName": "bowlofnoodles",
     "category": "Coding",
     "capabilities": [
@@ -31,7 +31,7 @@
     "defaultPrompt": [
       "Use $gearshift:init to initialize Gearshift in this repository.",
       "Use $gearshift:quick to make this small, clear change directly.",
-      "Use $gearshift:full to plan and implement this complex change."
+      "Use $gearshift:complex to clarify, plan, and implement this complex change."
     ]
   }
 }

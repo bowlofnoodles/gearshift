@@ -1,17 +1,13 @@
-import { access, readFile } from "node:fs/promises";
-import { constants } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { strayChecks } from "./artifacts.mjs";
 import { MANAGED_GUIDANCE } from "./init.mjs";
-import { gearPaths } from "./paths.mjs";
 import { discoverSkills } from "./skills.mjs";
 
 const PLUGIN_ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const check = (id, level, message, path) => ({ id, level, message, ...(path ? { path } : {}) });
-const exists = (path) => access(path, constants.F_OK).then(() => true, () => false);
 const readOptional = async (path) => readFile(path, "utf8").catch((error) => error.code === "ENOENT" ? null : Promise.reject(error));
 
 function tuple(version) {
@@ -49,7 +45,6 @@ function selectEvidence(evidence, names, range) {
 
 export async function runDoctor({ root, skillRoots = [] }) {
   const resolvedRoot = resolve(root);
-  const paths = gearPaths(resolvedRoot);
   const checks = [];
   const compatibility = JSON.parse(await readFile(join(PLUGIN_ROOT, "compatibility.json"), "utf8"));
   const packageInfo = JSON.parse(await readFile(join(PLUGIN_ROOT, "package.json"), "utf8"));
@@ -66,17 +61,6 @@ export async function runDoctor({ root, skillRoots = [] }) {
     join(homedir(), ".codex", "plugins", "cache"),
   ];
   const evidence = await discoverSkills(roots);
-  const superpowers = selectEvidence(
-    evidence,
-    ["superpowers", "using-superpowers"],
-    compatibility.dependencies.superpowers.supported,
-  );
-  checks.push(check(
-    "dependency-superpowers",
-    superpowers && supported(superpowers.version, compatibility.dependencies.superpowers.supported) ? "pass" : "error",
-    superpowers ? `Superpowers ${superpowers.version ?? "unknown"}` : "Superpowers is missing",
-    superpowers?.path,
-  ));
   const grills = ["grill-me", "grill-with-docs"].map((name) => selectEvidence(
     evidence,
     [name],
@@ -109,24 +93,7 @@ export async function runDoctor({ root, skillRoots = [] }) {
     checks.push(check("guidance-managed", valid ? "pass" : "error", `${target} Gearshift block ${valid ? "is valid" : "conflicts with the managed contract"}`, target));
   }
 
-  for (const [name, path] of [["config", paths.config], ["index", paths.index], ["tasks", paths.tasks]]) {
-    checks.push(check("gear-structure", await exists(path) ? "pass" : "error", `.gear ${name} ${await exists(path) ? "exists" : "is missing"}`, path));
-  }
-  checks.push(check(
-    "gear-runtime",
-    "pass",
-    await exists(paths.runtime) ? ".gear runtime exists" : ".gear runtime is ignored and will be created on demand",
-    paths.runtime,
-  ));
-  const nestedIgnore = await readOptional(join(paths.gear, ".gitignore"));
-  const ignoresRuntime = nestedIgnore !== null && ["/.runtime/", "*.tmp", "*.lock"].every((rule) => nestedIgnore.split(/\r?\n/).includes(rule));
-  checks.push(check("git-runtime-ignore", ignoresRuntime ? "pass" : "error", ignoresRuntime ? "Runtime files are ignored" : "Nested .gear/.gitignore is incomplete"));
-  const rootIgnore = await readOptional(join(resolvedRoot, ".gitignore")) ?? "";
-  const excludesGear = rootIgnore.split(/\r?\n/).map((line) => line.trim()).some((line) => [".gear", ".gear/", "/.gear", "/.gear/"].includes(line));
-  checks.push(check("git-root-ignore", excludesGear ? "error" : "pass", excludesGear ? "Root .gitignore excludes .gear" : "Shared .gear artifacts remain trackable"));
-
-  checks.push(...await strayChecks(resolvedRoot));
-  const routingFixtures = ["quick-localized", "standard-bounded", "full-migration", "explicit-quick-conflict", "explicit-full-no-downgrade"];
+  const routingFixtures = ["quick-localized", "complex-bounded", "complex-migration", "explicit-quick-conflict", "explicit-complex-no-downgrade"];
   for (const fixture of routingFixtures) checks.push(check(`routing-fixture-${fixture}`, "pass", `Routing requirement registered: ${fixture}`));
 
   const summary = { total: checks.length, pass: 0, warning: 0, error: 0 };

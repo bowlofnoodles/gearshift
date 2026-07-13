@@ -1,6 +1,6 @@
 ---
 name: doctor
-description: Use when diagnosing Gearshift setup, dependency compatibility, routing guidance, .gear structure, ignore rules, or stray workflow artifacts.
+description: Use when diagnosing Gearshift setup, dependency compatibility, routing guidance.
 ---
 
 # Gearshift Doctor
@@ -11,7 +11,7 @@ Run the bundled read-only diagnostic:
 node "${PLUGIN_ROOT}/scripts/gear.mjs" doctor --root "$PWD"
 ```
 
-Doctor checks plugin and dependency versions, managed `AGENTS.md` or `CLAUDE.md` guidance, canonical `.gear/` structure, runtime ignore rules, root ignore conflicts, stray workflow artifacts, and routing fixtures.
+Doctor checks plugin and dependency versions, managed `AGENTS.md` or `CLAUDE.md` guidance, and routing fixtures.
 
 Report every pass, warning, and error. For failures, explain the affected gear and give the exact path or dependency evidence when available.
 

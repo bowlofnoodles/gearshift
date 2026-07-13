@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-const actions = ["init", "quick", "standard", "full", "continue", "doctor"];
+const actions = ["init", "quick", "complex", "doctor"];
 
 function runHook(input) {
   return new Promise((resolve, reject) => {
@@ -20,7 +20,7 @@ function runHook(input) {
   });
 }
 
-test("Claude commands are thin one-to-one Gearshift Skill adapters", async () => {
+test("commands are thin one-to-one Gearshift Skill adapters", async () => {
   for (const namespace of ["gearshift", "gear"]) for (const action of actions) {
     await readFile(`skills/${action}/SKILL.md`, "utf8");
     const command = await readFile(`commands/${namespace}/${action}.md`, "utf8");
@@ -34,22 +34,15 @@ test("Claude commands are thin one-to-one Gearshift Skill adapters", async () =>
 
 test("platform manifests expose native invocation syntax", async () => {
   const codex = JSON.parse(await readFile(".codex-plugin/plugin.json", "utf8"));
-  const claude = JSON.parse(await readFile(".claude-plugin/plugin.json", "utf8"));
-  assert.ok(codex.interface.defaultPrompt.some((prompt) => /\$gearshift:(init|quick|standard|full|continue|doctor)/.test(prompt)));
-  assert.equal(claude.commands, "./commands/");
-  assert.equal(claude.hooks, undefined, "Claude auto-discovers the standard hooks file once");
+  assert.ok(codex.interface.defaultPrompt.some((prompt) => /\$gearshift:(init|quick|complex|doctor)/.test(prompt)));
 });
 
 test("Codex Skill display names use a Gearshift prefix", async () => {
   const skills = [
-    "artifact-contract",
     "complexity-router",
-    "continue",
     "doctor",
-    "full",
     "init",
     "quick",
-    "standard",
     "using-gearshift",
   ];
 
@@ -78,13 +71,11 @@ test("SessionStart emits compact initialized and uninitialized context without m
   const before = await readdir(root);
   const uninitializedJson = JSON.parse(await runHook({ cwd: root, source: "startup" }));
   assert.match(uninitializedJson.hookSpecificOutput.additionalContext, /\$gearshift:init/);
-  assert.match(uninitializedJson.hookSpecificOutput.additionalContext, /\/gearshift:init/);
   assert.deepEqual(await readdir(root), before);
 
-  await mkdir(join(root, ".gear"));
-  await writeFile(join(root, ".gear/config.yaml"), "version: 1\n");
+  await writeFile(join(root, "AGENTS.md"), "<!-- GEARSHIFT:START -->\nmanaged\n<!-- GEARSHIFT:END -->\n");
   const context = JSON.parse(await runHook({ cwd: root, source: "resume" })).hookSpecificOutput.additionalContext;
   assert.match(context, /all coding changes.*Gearshift first/i);
   assert.match(context, /explicit selection wins/i);
-  assert.match(context, /Superpowers.*Full engine/i);
+  assert.match(context, /Quick and Complex/i);
 });
