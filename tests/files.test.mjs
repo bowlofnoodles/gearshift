@@ -1,35 +1,15 @@
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, readdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 import test from "node:test";
 
-import { gearPaths } from "../scripts/lib/paths.mjs";
 import {
   mergeLines,
   upsertManagedBlock,
   writeIfMissing,
   writeJsonAtomic,
 } from "../scripts/lib/files.mjs";
-
-test("gearPaths returns every canonical repository path", () => {
-  const root = resolve("/repo");
-
-  assert.deepEqual(gearPaths("/repo"), {
-    root,
-    gear: join(root, ".gear"),
-    config: join(root, ".gear", "config.yaml"),
-    index: join(root, ".gear", "index.md"),
-    context: join(root, ".gear", "context"),
-    glossary: join(root, ".gear", "context", "glossary.md"),
-    architecture: join(root, ".gear", "context", "architecture.md"),
-    adr: join(root, ".gear", "adr"),
-    tasks: join(root, ".gear", "tasks"),
-    runtime: join(root, ".gear", ".runtime"),
-    currentTask: join(root, ".gear", ".runtime", "current-task"),
-  });
-  assert.equal(gearPaths("/repo").tasks, join(resolve("/repo"), ".gear", "tasks"));
-});
 
 test("writeIfMissing creates a file but preserves an existing file", async () => {
   const root = await mkdtemp(join(tmpdir(), "gearshift-"));
@@ -42,7 +22,7 @@ test("writeIfMissing creates a file but preserves an existing file", async () =>
 
 test("writeJsonAtomic replaces JSON with a final newline and removes its temporary file", async () => {
   const root = await mkdtemp(join(tmpdir(), "gearshift-"));
-  const path = join(root, "nested", "task.json");
+  const path = join(root, "nested", "data.json");
   await writeJsonAtomic(path, { status: "old" });
 
   await writeJsonAtomic(path, { status: "active", count: 2 });
@@ -51,12 +31,12 @@ test("writeJsonAtomic replaces JSON with a final newline and removes its tempora
     await readFile(path, "utf8"),
     '{\n  "status": "active",\n  "count": 2\n}\n',
   );
-  assert.deepEqual(await readdir(join(root, "nested")), ["task.json"]);
+  assert.deepEqual(await readdir(join(root, "nested")), ["data.json"]);
 });
 
 test("writeJsonAtomic safely completes concurrent writes without temporary residue", async () => {
   const root = await mkdtemp(join(tmpdir(), "gearshift-"));
-  const path = join(root, "task.json");
+  const path = join(root, "data.json");
   const values = Array.from({ length: 20 }, (_, writer) => ({
     writer,
     payload: `writer-${writer}`.repeat(100),
@@ -66,7 +46,7 @@ test("writeJsonAtomic safely completes concurrent writes without temporary resid
 
   const finalValue = JSON.parse(await readFile(path, "utf8"));
   assert.ok(values.some((value) => JSON.stringify(value) === JSON.stringify(finalValue)));
-  assert.deepEqual(await readdir(root), ["task.json"]);
+  assert.deepEqual(await readdir(root), ["data.json"]);
 });
 
 test("writeJsonAtomic removes its temporary file when rename fails", async () => {
@@ -122,8 +102,8 @@ test("upsertManagedBlock rejects unmatched managed markers", () => {
 
 test("mergeLines preserves existing rules and appends missing rules once", () => {
   assert.equal(
-    mergeLines("/.runtime/\n", ["/.runtime/", "*.tmp", "*.lock"]),
-    "/.runtime/\n*.tmp\n*.lock\n",
+    mergeLines("tmp/\n", ["tmp/", "*.tmp", "*.lock"]),
+    "tmp/\n*.tmp\n*.lock\n",
   );
   assert.equal(
     mergeLines("custom/\n\n*.tmp\ncustom/\n", ["*.tmp", "*.lock", "*.lock"]),

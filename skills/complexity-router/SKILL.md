@@ -1,40 +1,32 @@
 ---
 name: complexity-router
-description: Use when a natural-language coding request needs classification as Quick, Standard, or Full before implementation workflow Skills are selected.
+description: Use when a natural-language coding request needs classification as Quick or Complex before implementation workflow Skills are selected.
 ---
 
 # Complexity Router
 
-Select the lightest gear that safely fits the work. Complexity, not abstract risk or file count alone, determines the workflow.
+Classify the request before selecting an implementation workflow.
 
-## Precedence
+Apply this order: explicit user mode > project-specific classification rules > Router classification. An explicit Quick or Complex selection wins.
 
-Apply this order: explicit user gear > project-specific classification rules > Router classification. An explicit Quick, Standard, or Full selection wins.
+## Modes
 
-## Classification
-
-Evaluate requirement clarity, scope locality, module and dependency edges, unresolved decisions, public API or data-model changes, domain rules, migration and compatibility needs, staged delivery, and likelihood of exceeding one agent context.
-
-| Gear | Observable shape |
+| Mode | Use when |
 | --- | --- |
-| Quick | Clear outcome, localized change, few dependency edges, no meaningful design decision |
-| Standard | Bounded feature or fix with decisions that focused questioning and a short plan can resolve |
-| Full | Migration, module rewrite, architectural or cross-system change, compatibility work, many coupled decisions, or staged delivery |
+| Quick | Clear, localized change with no unresolved requirements and no public contract change |
+| Complex | Anything else: bounded features, unresolved decisions, docs-backed work, migrations, public API changes, rewrites, or cross-system work |
 
-File count is evidence, never a hard threshold.
+## Required Output
 
-## Output and Action
+Start with exactly:
 
-Output exactly:
+`Gear: <Quick|Complex> — <one sentence>`
 
-`Gear: <Quick|Standard|Full> — <one sentence>`
+Then continue without asking for confirmation unless Quick was explicit and the work is too complex.
 
-For automatic classification, continue without asking for confirmation. Load the selected Gearshift workflow Skill.
+## Upgrade Rules
 
-## Gear Changes
-
-- If a natural-language task reveals hidden complexity, announce the reason and upgrade automatically.
-- If an explicitly selected Quick task crosses into Standard or Full, pause and ask permission to upgrade.
-- If Standard expands substantially, preserve its artifacts and upgrade to Full.
-- Never silently downgrade an explicitly selected Full task.
-- Never change gear without stating why.
+- Natural-language requests route directly to the selected mode without asking.
+- If an implicitly selected Quick task reveals unresolved requirements or broader scope, announce the boundary and upgrade to Complex.
+- If an explicitly selected Quick task crosses into Complex, pause and ask permission to upgrade.
+- Never use the removed Standard or Full gears.

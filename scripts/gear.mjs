@@ -2,14 +2,6 @@
 
 import { initializeRepository } from "./lib/init.mjs";
 import { runDoctor } from "./lib/doctor.mjs";
-import { validateTaskArtifacts } from "./lib/artifacts.mjs";
-import {
-  continuationDecision,
-  createTask,
-  listIncompleteTasks,
-  readTask,
-  transitionTask,
-} from "./lib/tasks.mjs";
 
 function parseArguments(argv) {
   const [command, ...rest] = argv;
@@ -59,41 +51,22 @@ async function main() {
     result = await initializeRepository({ root: options.root });
     if (!options.json) printReport(result);
     if (result.errors.length > 0) process.exitCode = 1;
-  } else if (options.command === "task" && options.positionals[0] === "create") {
-    result = await createTask({
-      root: options.root,
-      title: options.values.title,
-      complexity: options.values.complexity,
-    });
-  } else if (options.command === "task" && options.positionals[0] === "transition") {
-    result = await transitionTask({ root: options.root, id: options.values.id, to: options.values.to });
-  } else if (options.command === "task" && options.positionals[0] === "list") {
-    result = await listIncompleteTasks(options.root);
-  } else if (options.command === "continue") {
-    result = await continuationDecision({ root: options.root });
   } else if (options.command === "doctor") {
     result = await runDoctor({ root: options.root, skillRoots: options.skillRoots });
-  } else if (options.command === "validate-artifacts") {
-    if (!options.values.id) throw new Error("validate-artifacts requires --id");
-    const task = await readTask(options.root, options.values.id);
-    const checks = await validateTaskArtifacts(options.root, task);
-    const summary = { total: checks.length, pass: 0, warning: 0, error: 0 };
-    for (const item of checks) summary[item.level] += 1;
-    result = { taskId: task.id, checks, summary };
   } else {
     console.error(`Unknown command: ${[options.command, ...options.positionals].filter(Boolean).join(" ")}`);
     process.exitCode = 2;
     return;
   }
 
-  if (["doctor", "validate-artifacts"].includes(options.command) && result.summary.error > 0) {
+  if (options.command === "doctor" && result.summary.error > 0) {
     process.exitCode = 1;
   }
 
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (options.command !== "init") {
-    if (options.command === "doctor" || options.command === "validate-artifacts") {
-      console.log(options.command === "doctor" ? `Gearshift ${result.version}` : `Task ${result.taskId}`);
+    if (options.command === "doctor") {
+      console.log(`Gearshift ${result.version}`);
       for (const check of result.checks) {
         const symbol = check.level === "pass" ? "+" : check.level === "warning" ? "!" : "x";
         console.log(`${symbol} ${check.id}: ${check.message}`);
@@ -101,18 +74,7 @@ async function main() {
       console.log(
         `Summary: ${result.summary.pass} passed, ${result.summary.warning} warnings, ${result.summary.error} errors`,
       );
-    } else if (Array.isArray(result)) {
-      for (const task of result) console.log(`${task.id} ${task.complexity} ${task.status}`);
-    } else if (result.action) {
-      const task = result.task;
-      console.log(`Action: ${result.action}`);
-      if (task) {
-        console.log(`Task: ${task.id}`);
-        console.log(`Gear: ${task.complexity}`);
-        console.log(`Last phase: ${task.phase}`);
-      }
-      console.log(`Next: ${result.action === "resume" ? "continue task work" : result.action}`);
-    } else console.log(`${result.id} ${result.complexity} ${result.status}`);
+    } else console.log(JSON.stringify(result, null, 2));
   }
 }
 

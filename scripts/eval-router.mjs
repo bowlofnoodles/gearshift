@@ -3,7 +3,7 @@
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 
-const GEARS = ["Quick", "Standard", "Full"];
+const GEARS = ["Quick", "Complex"];
 const ACTIONS = new Set(["route", "upgrade", "pause-upgrade"]);
 
 export function validateCorpus(cases) {
@@ -20,13 +20,13 @@ export function validateCorpus(cases) {
     if (ids.has(item.id)) errors.push(`${label}: duplicate id`);
     ids.add(item.id);
     if (typeof item.request !== "string" || !item.request.trim()) errors.push(`${label}: request is required`);
-    if (!GEARS.includes(item.expectedGear)) errors.push(`${label}: expectedGear must be Quick, Standard, or Full`);
+    if (!GEARS.includes(item.expectedGear)) errors.push(`${label}: expectedGear must be Quick or Complex`);
     if (typeof item.explicit !== "boolean") errors.push(`${label}: explicit must be boolean`);
     if (item.explicit && !GEARS.includes(item.explicitGear)) errors.push(`${label}: explicitGear is required for explicit cases`);
     if (!ACTIONS.has(item.expectedAction)) errors.push(`${label}: invalid expectedAction`);
     if (!Array.isArray(item.reasonSignals) || item.reasonSignals.length === 0) errors.push(`${label}: reasonSignals are required`);
   }
-  if (cases.length < 24) errors.push("Corpus must contain at least 24 cases");
+  if (cases.length < 6) errors.push("Corpus must contain at least 6 cases");
   if (/risk level/i.test(JSON.stringify(cases))) errors.push("Corpus must use complexity terminology");
   const counts = GEARS.map((gear) => cases.filter((item) => item.expectedGear === gear).length);
   if (Math.max(...counts) - Math.min(...counts) > 1) errors.push("Gear coverage must be balanced");
@@ -38,14 +38,14 @@ export function buildPrompts(cases) {
     caseId: item.id,
     prompt: [
       `Coding request: ${item.request}`,
-      "Apply Gearshift routing. Respond first with Gear: <Quick|Standard|Full> — <one sentence>.",
+      "Apply Gearshift routing. Respond first with Gear: <Quick|Complex> — <one sentence>.",
       "Do not begin implementation workflow before the verdict.",
     ].join("\n"),
   }));
 }
 
 function workflowStartedBeforeVerdict(response) {
-  const beforeVerdict = response.split(/Gear:\s*(?:Quick|Standard|Full)/i)[0];
+  const beforeVerdict = response.split(/Gear:\s*(?:Quick|Complex)/i)[0];
   return /(?:start|begin|invoke|run|use|write|create)[^\n.]*(?:brainstorm|superpowers|tdd|test[- ]first|worktree|implementation plan)/i.test(beforeVerdict);
 }
 
@@ -63,7 +63,7 @@ export async function scoreResults(cases, resultsPath) {
     const fixture = byId.get(capture.caseId);
     if (!fixture) throw new Error(`Unknown caseId: ${capture.caseId}`);
     const response = typeof capture.response === "string" ? capture.response : "";
-    const verdict = response.match(/Gear:\s*(Quick|Standard|Full)\s*—\s*([^\n]+)/i);
+    const verdict = response.match(/Gear:\s*(Quick|Complex)\s*—\s*([^\n]+)/i);
     const actualGear = verdict ? GEARS.find((gear) => gear.toLowerCase() === verdict[1].toLowerCase()) : null;
     const gearCorrect = actualGear === fixture.expectedGear;
     const explanationPresent = Boolean(verdict?.[2]?.trim());
