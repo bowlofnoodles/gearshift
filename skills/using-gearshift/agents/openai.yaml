@@ -1,4 +1,4 @@
 interface:
-  display_name: "Using Gearshift"
+  display_name: "Gearshift: Using Gearshift"
   short_description: "Route every coding task through Gearshift"
   default_prompt: "Use $gearshift:using-gearshift to route this coding request."

@@ -40,6 +40,25 @@ test("platform manifests expose native invocation syntax", async () => {
   assert.equal(claude.hooks, undefined, "Claude auto-discovers the standard hooks file once");
 });
 
+test("Codex Skill display names use a Gearshift prefix", async () => {
+  const skills = [
+    "artifact-contract",
+    "complexity-router",
+    "continue",
+    "doctor",
+    "full",
+    "init",
+    "quick",
+    "standard",
+    "using-gearshift",
+  ];
+
+  for (const skill of skills) {
+    const metadata = await readFile(`skills/${skill}/agents/openai.yaml`, "utf8");
+    assert.match(metadata, /^\s*display_name:\s+"Gearshift: [^"]+"/m);
+  }
+});
+
 test("SessionStart hook registers the bundled script for all startup reasons", async () => {
   const manifest = JSON.parse(await readFile("hooks/hooks.json", "utf8"));
   assert.deepEqual(Object.keys(manifest.hooks), ["SessionStart"]);

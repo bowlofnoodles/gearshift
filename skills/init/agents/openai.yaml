@@ -1,4 +1,4 @@
 interface:
-  display_name: "Initialize Gearshift"
+  display_name: "Gearshift: Initialize"
   short_description: "Initialize Gearshift in a repository"
   default_prompt: "Use $gearshift:init to initialize Gearshift in this repository."
