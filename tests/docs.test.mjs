@@ -14,7 +14,7 @@ test("English and Chinese READMEs are complete and cross-linked", async () => {
       "Standard",
       "Full",
       "$gearshift:init",
-      "/gear:init",
+      "/gearshift:init",
       ".gear/",
       "Superpowers",
       "grill-me",
@@ -32,8 +32,8 @@ test("documentation distinguishes Codex and Claude syntax", async () => {
   const english = await readFile("README.md", "utf8");
   assert.match(english, /\| Codex \| Claude Code \|/);
   assert.match(english, /\$gearshift:quick/);
-  assert.match(english, /\/gear:quick/);
-  assert.doesNotMatch(english, /Codex[^\n]*`\/gear:/i);
+  assert.match(english, /\/gearshift:quick/);
+  assert.doesNotMatch(english, /Codex[^\n]*`\/gearshift:/i);
   assert.doesNotMatch(english, /Claude Code[^\n]*`\$gearshift:/i);
   assert.match(english, /\/hooks/);
 });

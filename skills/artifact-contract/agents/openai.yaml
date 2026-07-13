@@ -1,4 +1,4 @@
 interface:
-  display_name: "Artifact Contract"
+  display_name: "Gearshift: Artifact Contract"
   short_description: "Keep workflow documents under .gear"
   default_prompt: "Use $gearshift:artifact-contract to place and validate workflow documents."

@@ -21,13 +21,13 @@ function runHook(input) {
 }
 
 test("Claude commands are thin one-to-one Gearshift Skill adapters", async () => {
-  for (const action of actions) {
+  for (const namespace of ["gearshift", "gear"]) for (const action of actions) {
     await readFile(`skills/${action}/SKILL.md`, "utf8");
-    const command = await readFile(`commands/gear/${action}.md`, "utf8");
+    const command = await readFile(`commands/${namespace}/${action}.md`, "utf8");
     assert.match(command, new RegExp(`gearshift:${action}`));
     assert.equal((command.match(/gearshift:[a-z-]+/g) ?? []).length, 1);
     assert.match(command, /\$ARGUMENTS/);
-    assert.ok(command.split(/\s+/).length < 60, `${action} stays a thin adapter`);
+    assert.ok(command.split(/\s+/).length < 60, `${namespace}:${action} stays a thin adapter`);
     assert.equal(`$gearshift:${action}`.includes("$gearshift:gear-"), false);
   }
 });
@@ -38,6 +38,25 @@ test("platform manifests expose native invocation syntax", async () => {
   assert.ok(codex.interface.defaultPrompt.some((prompt) => /\$gearshift:(init|quick|standard|full|continue|doctor)/.test(prompt)));
   assert.equal(claude.commands, "./commands/");
   assert.equal(claude.hooks, undefined, "Claude auto-discovers the standard hooks file once");
+});
+
+test("Codex Skill display names use a Gearshift prefix", async () => {
+  const skills = [
+    "artifact-contract",
+    "complexity-router",
+    "continue",
+    "doctor",
+    "full",
+    "init",
+    "quick",
+    "standard",
+    "using-gearshift",
+  ];
+
+  for (const skill of skills) {
+    const metadata = await readFile(`skills/${skill}/agents/openai.yaml`, "utf8");
+    assert.match(metadata, /^\s*display_name:\s+"Gearshift: [^"]+"/m);
+  }
 });
 
 test("SessionStart hook registers the bundled script for all startup reasons", async () => {
@@ -59,7 +78,7 @@ test("SessionStart emits compact initialized and uninitialized context without m
   const before = await readdir(root);
   const uninitializedJson = JSON.parse(await runHook({ cwd: root, source: "startup" }));
   assert.match(uninitializedJson.hookSpecificOutput.additionalContext, /\$gearshift:init/);
-  assert.match(uninitializedJson.hookSpecificOutput.additionalContext, /\/gear:init/);
+  assert.match(uninitializedJson.hookSpecificOutput.additionalContext, /\/gearshift:init/);
   assert.deepEqual(await readdir(root), before);
 
   await mkdir(join(root, ".gear"));
