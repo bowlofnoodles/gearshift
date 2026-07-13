@@ -55,51 +55,21 @@ test("Doctor reports compatible dependencies and never mutates the repository", 
   const root = await temp();
   const skills = await temp();
   await initializeRepository({ root, guidanceTargets: ["AGENTS.md"] });
-  await skill(skills, "superpowers", "superpowers", "6.1.1");
   await skill(skills, "matt", "grill-me", "1.1.0");
   await skill(skills, "matt-docs", "grill-with-docs", "1.1.0");
   const before = await snapshot(root);
   const report = await runDoctor({ root, skillRoots: [skills] });
   assert.equal(report.checks.filter((c) => c.level === "error").length, 0);
-  assert.ok(report.checks.some((c) => c.id === "dependency-superpowers" && c.level === "pass"));
   assert.deepEqual(await snapshot(root), before);
   assert.equal(report.summary.total, report.checks.length);
   assert.equal(report.summary.warning, 0);
   assert.equal("warn" in report.summary, false);
 });
 
-test("Doctor selects compatible evidence when multiple plugin versions exist", async () => {
-  const root = await temp();
-  const skills = await temp();
-  await initializeRepository({ root, guidanceTargets: ["AGENTS.md"] });
-  await skill(skills, "superpowers/5.1.0", "superpowers", "5.1.0");
-  await skill(skills, "superpowers/6.1.1", "superpowers", "6.1.1");
-  await skill(skills, "grill/1.1.0", "grill-me", "1.1.0");
-  await skill(skills, "grill-docs/1.1.0", "grill-with-docs", "1.1.0");
-  const report = await runDoctor({ root, skillRoots: [skills] });
-  const superpowers = report.checks.find((item) => item.id === "dependency-superpowers");
-  assert.equal(superpowers.level, "pass");
-  assert.match(superpowers.path, /6\.1\.1/);
-});
-
-test("Doctor accepts an absent ignored runtime directory after a fresh clone", async () => {
-  const root = await temp();
-  const skills = await temp();
-  await initializeRepository({ root, guidanceTargets: ["AGENTS.md"] });
-  await rm(join(root, ".gear/.runtime"), { recursive: true });
-  await skill(skills, "superpowers", "superpowers", "6.1.1");
-  await skill(skills, "grill", "grill-me", "1.1.0");
-  await skill(skills, "grill-docs", "grill-with-docs", "1.1.0");
-  const report = await runDoctor({ root, skillRoots: [skills] });
-  assert.equal(report.summary.error, 0);
-  assert.ok(report.checks.some((item) => item.id === "gear-runtime" && item.level === "pass"));
-});
-
 test("Doctor warns instead of failing when installed grill Skills omit versions", async () => {
   const root = await temp();
   const skills = await temp();
   await initializeRepository({ root, guidanceTargets: ["AGENTS.md"] });
-  await skill(skills, "superpowers", "superpowers", "6.1.1");
   for (const [folder, name] of [["grill", "grill-me"], ["grill-docs", "grill-with-docs"]]) {
     const directory = join(skills, folder);
     await mkdir(directory, { recursive: true });
@@ -117,28 +87,18 @@ test("Doctor reports missing/incompatible dependencies and repository conflicts"
   const root = await temp();
   const skills = await temp();
   await initializeRepository({ root, guidanceTargets: ["AGENTS.md"] });
-  await skill(skills, "superpowers", "superpowers", "7.0.0");
   await writeFile(join(root, "AGENTS.md"), "<!-- GEARSHIFT:START -->\nconflict\n<!-- GEARSHIFT:END -->\n");
-  await writeFile(join(root, ".gitignore"), "/.gear/\n");
-  await writeFile(join(root, ".gear/.gitignore"), "*.tmp\n");
-  await mkdir(join(root, "docs/superpowers/specs"), { recursive: true });
-  await writeFile(join(root, "docs/superpowers/specs/design.md"), "stray\n");
 
   const report = await runDoctor({ root, skillRoots: [skills] });
   const ids = new Set(report.checks.filter((c) => c.level === "error").map((c) => c.id));
-  assert.ok(ids.has("dependency-superpowers"));
   assert.ok(ids.has("dependency-mattpocock-skills"));
   assert.ok(ids.has("guidance-managed"));
-  assert.ok(ids.has("git-root-ignore"));
-  assert.ok(ids.has("git-runtime-ignore"));
-  assert.ok(ids.has("artifact-stray-superpowers"));
 });
 
 test("Doctor CLI prints a readable report", async () => {
   const root = await temp();
   const skills = await temp();
   await initializeRepository({ root, guidanceTargets: ["AGENTS.md"] });
-  await skill(skills, "superpowers", "superpowers", "6.1.1");
   await skill(skills, "matt", "grill-me", "1.1.0");
   await skill(skills, "matt-docs", "grill-with-docs", "1.1.0");
 

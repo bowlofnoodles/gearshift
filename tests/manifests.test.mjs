@@ -64,12 +64,12 @@ test("release metadata uses one Gearshift version", async () => {
   );
 });
 
-test("compatibility declares optional engines by gear", async () => {
+test("compatibility declares Complex dependencies", async () => {
   const compatibility = await load("compatibility.json");
-  assert.deepEqual(compatibility.dependencies.superpowers.requiredFor, ["full"]);
+  assert.equal("superpowers" in compatibility.dependencies, false);
   assert.deepEqual(
     compatibility.dependencies["mattpocock-skills"].requiredFor,
-    ["standard"],
+    ["complex"],
   );
 });
 
